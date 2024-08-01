@@ -40,9 +40,10 @@ class GenreDetail(views.APIView):
     def put(self, request, pk):
         genre = self.get_object(pk)
         serializer = GenreSerializer(genre, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
         genre = self.get_object(pk)
